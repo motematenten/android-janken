@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FinalPresentation</string>
+    <string name="janken_text">Rock, Paper, Scissors ...</string>
+    <string name="back_text">back</string>
+    <string name="result_lose">You Lose</string>
+    <string name="result_draw">Draw</string>
+    <string name="result_win">You Win</string>
+</resources>
