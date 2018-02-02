@@ -19,30 +19,30 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        int myHand;
+        int mySign;
         Intent intent = getIntent ();
         int id = intent.getIntExtra("MY_HAND", 0);
 
-        ImageView myHandImageView = (ImageView) findViewById(R.id.my_hand_image);
+        ImageView mySignImageView = (ImageView) findViewById(R.id.my_hand_image);
         switch(id){
             case R.id.gu:
-                myHandImageView.setImageResource(R.drawable.gu);
-                myHand = JANKEN_GU;
+                mySignImageView.setImageResource(R.drawable.gu);
+                mySign = JANKEN_GU;
                 break;
             case R.id.choki:
-                myHandImageView.setImageResource(R.drawable.choki);
-                myHand = JANKEN_CHOKI;
+                mySignImageView.setImageResource(R.drawable.choki);
+                mySign = JANKEN_CHOKI;
                 break;
             case R.id.pa:
-                myHandImageView.setImageResource(R.drawable.pa);
-                myHand = JANKEN_PA;
+                mySignImageView.setImageResource(R.drawable.pa);
+                mySign = JANKEN_PA;
                 break;
             default:
-                myHand = JANKEN_GU;
+                mySign = JANKEN_GU;
                 break;
         }
 
-        int comHand = getHand();
+        int comHand = getCPU();
         ImageView comHandImageView = (ImageView) findViewById(R.id.com_hand_image);
         switch (comHand){
             case JANKEN_GU:
@@ -56,7 +56,7 @@ public class ResultActivity extends AppCompatActivity {
                 break;
         }
         TextView resultLabel =(TextView) findViewById(R.id.result_label);
-        int gameResult = (comHand - myHand + 3) % 3;
+        int gameResult = (comHand - mySign + 3) % 3;
         switch (gameResult){
             case 0:
                 resultLabel.setText(R.string.result_draw);
@@ -68,7 +68,7 @@ public class ResultActivity extends AppCompatActivity {
                 resultLabel.setText(R.string.result_lose);
                 break;
         }
-        saveData(myHand, comHand, gameResult);
+        saveData(mySign, comHand, gameResult);
     }
     public void onBackButtonTapped(View view){
         finish();
@@ -80,7 +80,7 @@ public class ResultActivity extends AppCompatActivity {
 
         int gameCount = pref.getInt("GAME_COUNT", 0);
         int winningStreakCount = pref.getInt("WINNING_STREAK_COUNT", 0);
-        int lastComHand = pref.getInt("LAST_COM_HAND",0);
+        int lastComSign = pref.getInt("LAST_COM_HAND",0);
         int lastGameResult = pref.getInt("GAME_RESULT", -1);
         editor.putInt("GAME_COUNT", gameCount +1);
         if(lastGameResult == 2 && gameResult==2){
@@ -90,37 +90,37 @@ public class ResultActivity extends AppCompatActivity {
         }
         editor.putInt("LAST_MY_HAND", myHand);
         editor.putInt("LAST_COM_HAND", comHand);
-        editor.putInt("BEFORE_LAST_COM_HAND", lastComHand);
+        editor.putInt("BEFORE_LAST_COM_HAND", lastComSign);
         editor.putInt("GAME_RESULT", gameResult);
 
         editor.commit();
     }
 
-    private int getHand(){
-        int hand = (int)(Math.random() *3);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        int gameCount = pref.getInt("GAME_COUNT", 0);
-        int winningStreakCount = pref.getInt("WINNING_STREAM_COUNT", 0);
-        int lastMyHand = pref.getInt("LAST_MY_HAND", 0);
-        int lastComHand = pref.getInt("LAST_COM_HAND", 0);
-        int beforeLastComHand = pref.getInt("BEFORE_LAST_COM_HAND", 0);
-        int gameResult = pref.getInt("GAME_RESULT", -1);
+    private int getCPU(){
+        int cpu = (int)(Math.random() *3);
+        SharedPreferences prf = PreferenceManager.getDefaultSharedPreferences(this);
+        int gameCount = prf.getInt("GAME_COUNT", 0);
+        int winningStreakCount = prf.getInt("WINNING_STREAM_COUNT", 0);
+        int lastMySign = prf.getInt("LAST_MY_HAND", 0);
+        int lastComSign = prf.getInt("LAST_COM_HAND", 0);
+        int beforeLastComSign = prf.getInt("BEFORE_LAST_COM_HAND", 0);
+        int gameResult = prf.getInt("GAME_RESULT", -1);
 
         if (gameCount==1) {
             if (gameResult ==2) {
-                while(lastComHand==hand){
-                    hand = (int) (Math.random()*3);
+                while(lastComSign==cpu){
+                    cpu = (int) (Math.random()*3);
                 }
             } else if (gameResult==1){
-                hand = (lastMyHand-1+3)%3;
+                cpu = (lastMySign-1+3)%3;
             }
         } else if (winningStreakCount>0){
-            if(beforeLastComHand==lastComHand){
-                while(lastComHand==hand){
-                    hand=(int)(Math.random()*3);
+            if(beforeLastComSign==lastComSign){
+                while(lastComSign==cpu){
+                    cpu=(int)(Math.random()*3);
                 }
             }
         }
-        return hand;
+        return cpu;
     }
 }
